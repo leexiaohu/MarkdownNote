@@ -111,5 +111,3 @@
 - toJSON()
 - valueOf()	//数字对象比较有用
 
-
-![](http://i.imgur.com/lIL74MN.jpg)

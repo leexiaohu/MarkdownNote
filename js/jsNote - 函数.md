@@ -66,10 +66,10 @@
 
 ## 函数的方法和构造函数    
 ### call()方法和apply()方法 ###
-call()和applay()可以看做是某个对象的方法，通过调用方法的形式来间接调用函数。  
+call()和apply()可以看做是某个对象的方法，通过调用方法的形式来间接调用函数。  
 
-	f.call(0,1,2)
-	f.call(o,[1,2])
+	f.call(o,1,2)
+	f.apply(o,[1,2])
 	var biggest = Math.max.apply(Math,array_of_nums);//计算数组中的最大值
 
 
