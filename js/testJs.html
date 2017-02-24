@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+p[title*="val"] {text-decoration:underline;background-color:green;color:white}
+</style>
+<title>js test E</title>
+
+</head>
+<body>
+<div style="width:733px; border: 1px solid #666; padding:5px;">
+<p id="myP1" title="have val word">JJJJ</p>
+</div>
+<script version="1.5">
+(function(){
+
+	function print(val){
+		console.log(val);
+	}
+	
+	function Set(){
+		this.value = {};
+		this.n = 0;
+		this.add.apply(this,arguments);
+	}
+	Set.prototype.add = function(){
+		for(var i=0;i<arguments.length;i++){
+			var val = arguments[i];
+			if(!this.value.hasOwnProperty(val)){
+				this.value[val] = val;
+				this.n++;
+			}
+		}
+		return this;
+	};
+	Set.prototype.toString = function(){
+		for(var p in this.value){
+			console.log(this.value[p]);
+		}
+	};
+	Set.prototype.delete = function(val){
+		delete this.value[val];
+	};
+
+	console.log("s:");
+	var s = new Set("tom","jack","liquanxin");
+	s.add("tom1");
+	s.toString();
+	if( s instanceof Set){
+		//throw new Error("s is not instance of Set!");
+	}
+	console.log(s instanceof Set);
+	console.log(s.constructor);
+	
+	/*佌衄袨怓 猾蚾*/
+	function Range(from,to){
+		this.from = function(){return from};
+		this.to = function(){return to};
+	}
+	Range.prototype = {
+		constructor:Range,
+		includes:function(x){return this.from() <=x && this.to() >=x;},
+		foreach:function(f){
+			for(var x= Math.ceil(this.from()),max = this.to();x<=max;x++)f(x);
+		},
+		toString:function(){return "(" + this.from() + "..." + this.to() + ")";}
+	};
+	var r = new Range(1,5);
+	r.from = function(){return -1};
+	print(r.toString());
+	/**
+	var colections = {};
+	if(!colections){
+		print("colections is not defined~");
+	}else{
+		print(colections);
+	}*/
+	o = {x:1,y:2,z:3}
+	Object.prototype.m = 4;
+	print("输出对象的所有属性，包括继承属性：")
+	for(p in o)print(p)
+	print("只输出对象自有属性：");
+	for(p in Iterator(o,true)) print(p)
+	let all = [x,y] = [1,2,3,4];
+	//p1.innerHTML = "heheh";
+	//数组推导（似乎无法使用）
+	//let evensqures = [x*x for(x in range(0,10)) if(x%2=== 0)];
+	//print(evensqures)
+	//多条catch从句
+	try{
+		throw 1;
+	}catch(e if(e instanceof ReferenceError)){
+		print("reference error");
+	}catch(e if(typeof e === "string")){
+		print("type of e is string.")
+	}finally{
+		print("finnaly status.");
+	}
+}());
+</script>
+</body>
+
+</html>
+ 
