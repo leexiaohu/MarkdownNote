@@ -1,0 +1,71 @@
+<script type="text/javascript">
+
+function print(val){
+	console.log(val);
+}
+(function(){
+	//"use strict";
+
+    print(this === window); //true
+
+    var foo = "jack";
+    foo2 = "jack2";
+
+    print(this.foo);
+    print(window.foo);
+
+    print(this.foo2);
+    print(window.foo2);
+
+	print("-------------------");
+    print("Test 'new' keyword:");
+
+    function testThis(){
+    	this.foo2 = "bar";
+    	print(this);
+    }
+    print(this.foo2);
+    new testThis();
+    print(this.foo2);
+
+    print("------------------");
+
+	function Thing1() {
+	}
+	Thing1.prototype.foo = "liquanxin";
+
+	function Thing2() {
+	    this.foo = "foo";
+	    this.foo2 = "foo2";
+	}
+
+	Thing2.prototype = new Thing1();
+
+	function Thing3() {
+		this.foo3 = "foo3";
+	}
+	Thing3.prototype = new Thing2();
+
+
+	var thing = new Thing3();
+	console.log(thing.foo); //logs "foo"
+
+}());
+print("-------------------");
+print("test bind method:");
+
+function Thing() {
+}
+Thing.prototype.foo = "bar";
+
+
+Thing.prototype.logFoo = function () {
+    console.log(this.foo);
+}
+
+var thing =  Object.create(Thing.prototype);
+print(Thing.prototype);
+
+thing.logFoo(); //logs "bar"
+
+</script>

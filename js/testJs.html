@@ -98,7 +98,16 @@ p[title*="val"] {text-decoration:underline;background-color:green;color:white}
 	}
 }());
 </script>
-</body>
 
+<?php
+function makeyogurt($type = "acidophilus", $flavour)
+{
+    return "Making a bowl of $type $flavour.\n";
+}
+
+echo makeyogurt("raspberry");   // won't work as expected
+?> 
+
+</body>
 </html>
  
