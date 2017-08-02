@@ -1,5 +1,8 @@
 # Java - IO
 
+
+[TOC]
+
 ### Java IO 概述
 
 Java IO 是一套Java用来读写数据（输入和输出）的API。大部分程序都要处理一些输入，并由输入产生一些输出。Java为此提供了`java.io`包。
@@ -283,7 +286,7 @@ public class InputStreamProcessingTemplate {
     }
 }
 ```
--模板的使用
+- 模板的使用
 
 ```java
 InputStreamProcessingTemplate.process("someFile.txt",
@@ -296,3 +299,264 @@ InputStreamProcessingTemplate.process("someFile.txt",
             }
         });
 ```
+### Java IO: RandomAccessFile
+
+简单的RandomAccessFile 类使用方法
+
+```java
+		RandomAccessfile file = new RandomAccessfile("C:\\Data||file.txt","rw");
+        file.seek(200);//移动指针
+        long pointer = file.geFilePointer();//获取文件指针位置
+        int aByte = file.read();//读取文件的一个字节
+        file.write("Hello word!".getBytes());//写入字节数组
+        file.close();
+```
+### Java IO: File
+
+###### Java IO API中的FIle类可以让你访问底层文件系统，通过File类，你可以做到以下几点：
+
+- 检测文件是否存在
+- 读取文件长度
+- 重命名或移动文件
+- 删除文件
+- 检测某个路径是文件还是目录
+- 读取目录中的文件列表
+
+```java
+	File file = new File("c:\\data\\input-file.txt");
+    boolean fileExists = file.exists();
+	long length = file.length();
+	boolean success = file.renameTo(new File("c:\\data\\new-file.txt"));
+    boolean success = file.delete();
+	boolean isDirectory = file.isDirectory();
+	String[] fileNames = file.list();
+	File[] files = file.listFiles();
+```
+
+### Java IO: DataInputStream&DataOutputStream
+
+DataInputStream可以使你从输入流中读取Java基本类型数据，而不必每次读取字节数据。你可以把InputStream包装到DataInputStream中，然后就可以从此输入流中读取基本类型数据了，代码如下：
+
+```java
+DataInputStream input = new DataInputStream(new FileInputStream("binary.data"));
+
+int aByte = input.read();
+
+int anInt = input.readInt();
+
+float aFloat = input.readFloat();
+
+double aDouble = input.readDouble();//etc.
+
+input.close();
+```
+###### DataOutputStream
+
+```java
+DataOutputStream output = new DataOutputStream(new FileOutputStream("binary.data"));
+
+output.write(45);
+
+//byte data output.writeInt(4545);
+
+//int data output.writeDouble(109.123);
+
+//double data  output.close();
+```
+
+### Java IO: 序列化与ObjectInputStream、ObjectOutputStream
+
+#### Serializable
+
+如果你希望类能够序列化和反序列化，必须实现Serializable接口，就像所展示的ObjectInputStream和ObjectOutputStream例子一样。
+
+#### ObjectInputStream
+
+ObjectInputStream能够让你从输入流中读取Java对象，而不需要每次读取一个字节。你可以把InputStream包装到ObjectInputStream中，然后就可以从中读取对象了。代码如下：
+
+```java
+ObjectInputStream input = new ObjectInputStream(new FileInputStream("object.data"));
+
+MyClass object = (MyClass) input.readObject(); //etc.
+
+input.close();
+```
+在这个例子中，你读取的对象必须是MyClass的一个实例，并且必须事先通过ObjectOutputStream序列化到“object.data”文件中。
+
+#### ObjectOutputStream
+
+ObjectOutputStream能够让你把对象写入到输出流中，而不需要每次写入一个字节。你可以把OutputStream包装到ObjectOutputStream中，然后就可以把对象写入到该输出流中了。代码如下：
+
+```java
+ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("object.data"));
+
+MyClass object = new MyClass();  output.writeObject(object); //etc.
+
+output.close();
+```
+
+### Java IO: 其他*字节流*
+
+本小节会简要概括Java IO中的PushbackInputStream，SequenceInputStream和PrintStream。其中，最常用的是PrintStream，System.out和System.err都是PrintStream类型的变量.
+
+#### PushbackInputStream
+
+PushbackInputStream用于解析InputStream内的数据。有时候你需要提前知道接下来将要读取到的字节内容，才能判断用何种方式进行数据解析。PushBackInputStream允许你这么做，你可以把读取到的字节重新推回到InputStream中，以便再次通过read()读取。
+
+```java
+PushbackInputStream input = new PushbackInputStream(new FileInputStream("c:\\data\\input.txt"));
+
+int data = input.read();
+
+input.unread(data);
+```
+
+#### SequenceInputStream
+
+SequenceInputStream把一个或者多个InputStream整合起来，形成一个逻辑连贯的输入流。当读取SequenceInputStream时，会先从第一个输入流中读取，完成之后再从第二个输入流读取，以此推类。代码如下：
+
+```java
+InputStream input1 = new FileInputStream("c:\\data\\file1.txt");
+
+InputStream input2 = new FileInputStream("c:\\data\\file2.txt");
+
+InputStream combined = new SequenceInputStream(input1, input2);
+```
+通过SequenceInputStream，例子中的2个InputStream使用起来就如同只有一个InputStream一样(SequenceInputStream的read()方法会在读取到当前流末尾时，关闭流，并把当前流指向逻辑链中的下一个流，最后返回新的当前流的read()值)。
+
+#### PrintStream
+
+PrintStream允许你把格式化数据写入到底层OutputStream中。比如，写入格式化成文本的int，long以及其他原始数据类型到输出流中，而非它们的字节数据。代码如下：
+```java
+PrintStream output = new PrintStream(outputStream);
+
+output.print(true);
+
+output.print((int) 123);
+
+output.print((float) 123.456);
+
+output.printf(Locale.UK, "Text + data: %1$", 123);
+
+output.close();
+```
+PrintStream包含2个强大的函数，分别是format()和printf()(这两个函数几乎做了一样的事情，但是C程序员会更熟悉printf())。
+
+### Java IO: 其他*字符流*
+
+本小节会简要概括Java IO中的PushbackReader，LineNumberReader，StreamTokenizer，PrintWriter，StringReader，StringWriter。
+
+#### PushbacjReader
+
+PushbackReader与PushbackInputStream类似，唯一不同的是PushbackReader处理字符，PushbackInputStream处理字节。代码如下：
+
+```java
+PushbackReader reader = new PushbackReader(new FileReader("c:\\data\\input.txt"));
+
+int data = reader.read();
+
+reader.unread(data);
+
+//设置缓冲区大小
+PushbackReader reader = new PushbackReader(new FileReader("c:\\data\\input.txt"), 8);
+
+```
+
+#### LineNumberReader
+
+`LineNumberReader`是记录了已读取数据行号的BufferedReader。默认情况下，行号从0开始，当`LineNumberReader`读取到行终止符时，行号会递增(译者注：换行\n，回车\r，或者换行回车\n\r都是行终止符)。
+
+你可以通过`getLineNumber()`方法获取当前行号，通过`setLineNumber()`方法设置当前行数(`setLineNumber()`仅仅改变`LineNumberReader`内的记录行号的变量值，不会改变当前流的读取位置。流的读取依然是顺序进行，意味着你不能通过`setLineNumber()`实现流的跳跃读取)。代码如下：
+
+```java
+LineNumberReader reader = new LineNumberReader(new FileReader("c:\\data\\input.txt"));
+
+int data = reader.read();
+
+while(data != -1){
+
+    char dataChar = (char) data;
+
+    data = reader.read();
+
+    int lineNumber = reader.getLineNumber();
+
+}
+```
+
+如果解析的文本有错误，LineNumberReader可以很方便地定位问题。当你把错误报告给用户时，如果能够同时把出错的行号提供给用户，用户就能迅速发现并且解决问题。
+
+### StreamTokenizer
+
+StreamTokenizer可以把输入流(InputStream和Reader。通过InputStream构造StreamTokenizer的构造函数已经在JDK1.1版本过时，推荐将InputStream转化成Reader，再利用此Reader构造StringTokenizer)分解成一系列符号。比如，句子”Mary had a little lamb”的每个单词都是一个单独的符号。
+
+当你解析文件或者计算机语言时，为了进一步的处理，需要将解析的数据分解成符号。通常这个过程也称作分词。
+
+通过循环调用nextToken()可以遍历底层输入流的所有符号。在每次调用nextToken()之后，StreamTokenizer有一些变量可以帮助我们获取读取到的符号的类型和值。这些变量是：
+
+ttype 读取到的符号的类型(字符，数字，或者行结尾符)
+
+sval 如果读取到的符号是字符串类型，该变量的值就是读取到的字符串的值
+
+nval 如果读取到的符号是数字类型，该变量的值就是读取到的数字的值
+
+```java
+StreamTokenizer tokenizer = new StreamTokenizer(new StringReader("Mary had 1 little lamb..."));
+
+while(tokenizer.nextToken() != StreamTokenizer.TT_EOF){
+
+    if(tokenizer.ttype == StreamTokenizer.TT_WORD) {
+
+        System.out.println(tokenizer.sval);
+    } else if(tokenizer.ttype == StreamTokenizer.TT_NUMBER) {
+
+        System.out.println(tokenizer.nval);
+
+    } else if(tokenizer.ttype == StreamTokenizer.TT_EOL) {
+
+        System.out.println();
+
+    }
+
+}
+```
+StreamTokenizer可以识别标示符，数字，引用的字符串，和多种注释类型。你也可以指定何种字符解释成空格、注释的开始以及结束等。在StreamTokenizer开始解析之前，所有的功能都可以进行配置。
+
+#### StringReader
+StringReader能够将原始字符串转换成Reader，代码如下：
+
+```java
+Reader reader = new StringReader("input string...");
+
+int data = reader.read();
+
+while(data != -1) {
+
+    //do something with data...
+
+    doSomethingWithData(data);
+
+    data = reader.read();
+
+}
+
+reader.close();
+```
+
+#### StringWriter
+
+StringWriter能够以字符串的形式从Writer中获取写入到其中数据，代码如下：
+
+```java
+StringWriter writer = new StringWriter();
+
+//write characters to writer.
+
+String data = writer.toString();
+
+StringBuffer dataBuffer = writer.getBuffer();
+```
+
+toString()方法能够获取StringWriter中的字符串数据。
+
+getBuffer()方法能够获取StringWriter内部构造字符串时所使用的StringBuffer对象。

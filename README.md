@@ -1,2 +1,2 @@
 # MarkdownNote
-使用Markdown记笔记
+用markdown语法写技术笔记
